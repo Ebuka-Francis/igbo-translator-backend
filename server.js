@@ -8,7 +8,7 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 const corsOption = {
-   origin: 'https://translation-app-three-delta.vercel.app/',
+   origin: '•.vercel.app/',
 };
 
 // Middleware
