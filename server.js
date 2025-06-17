@@ -7,8 +7,12 @@ const router = require('./routes/translate');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+const corsOption = {
+   origin: 'https://www.google.com/',
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOption));
 app.use(express.json());
 
 // Database connection
