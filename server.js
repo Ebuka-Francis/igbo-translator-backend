@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 const corsOption = {
    origin: [
       'https://translation-app-three-delta.vercel.app',
-      '^https?://localhost(:d+)?$',
+      /^https?:\/\/localhost(:\d+)?$/,
    ],
 };
 
