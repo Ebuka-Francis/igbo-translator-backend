@@ -3,6 +3,7 @@ const cors = require('cors');
 const mongoose = require('mongoose');
 require('dotenv').config();
 const router = require('./routes/translate');
+const authRouter = require('./routes/auth');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -27,6 +28,7 @@ mongoose.connect(
 // app.use('/api/translate', require('./routes/translate'));
 // app.use('api/auth', require('./routes/auth'));
 app.use(router);
+app.use(authRouter);
 // app.use('/api/users', require('./routes/users'));
 
 app.get('/', (req, res) => {
