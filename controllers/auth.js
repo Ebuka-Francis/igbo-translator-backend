@@ -1,9 +1,11 @@
 // routes/auth.js
-const express = require('express');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const auth = require('../middleware/auth');
+
+// In-memory token blacklist (for production, use Redis or database)
+const tokenBlacklist = new Set();
 
 // Register
 const register = async (req, res) => {
@@ -82,6 +84,26 @@ const login = async (req, res) => {
    }
 };
 
+// Logout
+const logout = async (req, res) => {
+   try {
+      // Get token from header
+      const token = req.header('Authorization')?.replace('Bearer ', '');
+
+      if (!token) {
+         return res.status(401).json({ error: 'No token provided' });
+      }
+
+      // Add token to blacklist
+      tokenBlacklist.add(token);
+
+      res.json({ message: 'Logged out successfully' });
+   } catch (error) {
+      console.error('Logout error:', error);
+      res.status(500).json({ error: 'Logout failed' });
+   }
+};
+
 // Get current user
 const getMe = async (req, res) => {
    try {
@@ -92,8 +114,15 @@ const getMe = async (req, res) => {
    }
 };
 
+// Helper function to check if token is blacklisted
+const isTokenBlacklisted = (token) => {
+   return tokenBlacklist.has(token);
+};
+
 module.exports = {
    register,
    getMe,
    login,
+   logout,
+   isTokenBlacklisted,
 };

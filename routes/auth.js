@@ -6,6 +6,7 @@ const router = express.Router();
 router.post('/api/register', authController.register);
 router.post('/api/login', authController.login);
 router.get('/api/getUser', authController.getMe);
+router.post('/api/logout', authController.logout);
 
 // OR if not mounted with prefix, use:
 // router.post('/api/register', authController.register);
