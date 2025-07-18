@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 5000;
 
 const corsOption = {
    origin: [
-      'https://ebuka-francis-translation.vercel.app/',
+      'https://ebuka-francis-translation.vercel.app',
       /^https?:\/\/localhost(:\d+)?$/,
    ],
 };
