@@ -1,13 +1,17 @@
-// routes/auth.js
+// Updated controllers/auth.js
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const auth = require('../middleware/auth');
+// Import token generation functions from middleware
+const {
+   generateAccessToken,
+   generateRefreshToken,
+} = require('../utils/tokenUtils');
 
 // In-memory token blacklist (for production, use Redis or database)
 const tokenBlacklist = new Set();
 
-// Register
+// Register - Keep existing code
 const register = async (req, res) => {
    try {
       const { name, email, password, role } = req.body;
@@ -29,12 +33,14 @@ const register = async (req, res) => {
       const user = new User({ name, email, password, role });
       await user.save();
 
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-         expiresIn: '7d',
-      });
+      // Generate both tokens for registration too
+      const accessToken = generateAccessToken(user._id);
+      const refreshToken = generateRefreshToken(user._id);
 
       res.status(201).json({
-         token,
+         success: true,
+         accessToken,
+         refreshToken,
          user: {
             id: user._id,
             name: user.name,
@@ -48,7 +54,7 @@ const register = async (req, res) => {
    }
 };
 
-// Login
+// UPDATED Login function with dual tokens
 const login = async (req, res) => {
    try {
       const { email, password } = req.body;
@@ -65,13 +71,14 @@ const login = async (req, res) => {
          return res.status(400).json({ error: 'Invalid credentials' });
       }
 
-      // Generate JWT
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-         expiresIn: '7d',
-      });
+      // Generate both access and refresh tokens
+      const accessToken = generateAccessToken(user._id);
+      const refreshToken = generateRefreshToken(user._id);
 
       res.json({
-         token,
+         success: true,
+         accessToken,
+         refreshToken,
          user: {
             id: user._id,
             name: user.name,
@@ -80,11 +87,12 @@ const login = async (req, res) => {
          },
       });
    } catch (error) {
+      console.error('Login error:', error);
       res.status(500).json({ error: 'Login failed' });
    }
 };
 
-// Logout
+// Logout - Keep existing code
 const logout = async (req, res) => {
    try {
       // Get token from header
@@ -104,7 +112,7 @@ const logout = async (req, res) => {
    }
 };
 
-// Get current user
+// Get current user - Keep existing code
 const getMe = async (req, res) => {
    try {
       const user = await User.findById(req.user.id).select('-password');

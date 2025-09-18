@@ -1,12 +1,11 @@
 const express = require('express');
 const authController = require('../controllers/auth');
 const router = express.Router();
+const { auth, refreshAuth } = require('../middleware/auth');
 const {
-   auth,
-   refreshAuth,
    generateAccessToken,
    generateRefreshToken,
-} = require('../middleware/auth');
+} = require('../utils/tokenUtils'); // Import from utils
 
 // Public routes (no authentication required)
 router.post('/register', authController.register);
@@ -16,7 +15,7 @@ router.post('/login', authController.login);
 router.get('/getUser', auth, authController.getMe);
 router.post('/logout', auth, authController.logout);
 
-// Token refresh route (uses refresh token middleware)
+// Token refresh route
 router.post('/refresh', refreshAuth, (req, res) => {
    try {
       const newAccessToken = generateAccessToken(req.user._id);
