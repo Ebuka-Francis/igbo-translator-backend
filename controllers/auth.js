@@ -30,8 +30,17 @@ const register = async (req, res) => {
          return res.status(400).json({ error: 'User already exists' });
       }
 
-      const user = new User({ name, email, password, role });
-      await user.save();
+      const saltRounds = 10;
+      const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+      const user = new User({
+         name,
+         email,
+         password: hashedPassword,
+         role,
+      });
+
+      await user.save(); // ← YOU'RE MISSING THIS LINE!
 
       // Generate both tokens for registration too
       const accessToken = generateAccessToken(user._id);
