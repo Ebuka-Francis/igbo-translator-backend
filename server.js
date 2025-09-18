@@ -28,7 +28,7 @@ mongoose.connect(
 // app.use('/api/translate', require('./routes/translate'));
 // app.use('api/auth', require('./routes/auth'));
 app.use(router);
-app.use('/api', authRouter);
+app.use('/api/auth', authRouter);
 // app.use('/api/users', require('./routes/users'));
 
 app.get('/', (req, res) => {
