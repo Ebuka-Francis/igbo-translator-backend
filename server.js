@@ -4,7 +4,12 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 const router = require('./routes/translate');
 const authRouter = require('./routes/auth');
+const cronJob = require('./config/cron');
 
+// Start the cron job
+cronJob.start();
+
+// Initialize the app
 const app = express();
 const PORT = process.env.PORT || 5000;
 
